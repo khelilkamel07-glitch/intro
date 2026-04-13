@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction à l'Informatique – Club CNFP Oran</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Rajdhani:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#111828;
+  --navy2:#1a2340;
+  --gold:#c9962a;
+  --gold-light:#f0c050;
+  --crimson:#8b1a2a;
+  --white:#f5f0e8;
+  --card:#ffffff08;
+  --border:rgba(201,150,42,.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--navy);color:var(--white);font-family:'Lato',sans-serif;}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:2rem;position:relative;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% 0%,rgba(201,150,42,.2) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 85%,rgba(139,26,42,.25) 0%,transparent 60%),
+    linear-gradient(155deg,#090e1c 0%,#111828 55%,#0b1020 100%);
+}
+.hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(201,150,42,.05) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(201,150,42,.05) 1px,transparent 1px);
+  background-size:55px 55px;
+  animation:gpan 18s linear infinite;
+}
+@keyframes gpan{to{background-position:55px 55px;}}
+
+.logo-wrap{animation:float 4s ease-in-out infinite;margin-bottom:2rem;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.logo-wrap img{width:155px;border-radius:50%;box-shadow:0 0 60px rgba(201,150,42,.55),0 0 120px rgba(201,150,42,.18);}
+
+.badge{
+  display:inline-block;background:var(--crimson);color:var(--gold-light);
+  font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.18em;font-size:.75rem;
+  padding:.35rem 1.2rem;border-radius:2px;text-transform:uppercase;margin-bottom:1rem;
+  animation:fup .6s ease both;
+}
+h1{
+  font-family:'Cinzel Decorative',serif;font-size:clamp(1.6rem,5vw,3.2rem);line-height:1.2;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold),#fff8e0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:.9rem;animation:fup .7s .1s ease both;
+}
+.subtitle{
+  font-family:'Rajdhani',sans-serif;font-size:1.15rem;
+  color:rgba(245,240,232,.6);letter-spacing:.1em;text-transform:uppercase;
+  animation:fup .7s .2s ease both;
+}
+.divider{width:120px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:2rem auto;}
+.scroll-hint{
+  position:absolute;bottom:1.8rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.4rem;
+  color:rgba(201,150,42,.7);font-size:.75rem;letter-spacing:.12em;
+  animation:bounce 2s ease-in-out infinite;
+}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+@keyframes fup{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── NAV (table des matières) ── */
+.toc{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:.7rem;
+  padding:1.5rem 1rem;
+  background:rgba(0,0,0,.35);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(14px);
+}
+.toc a{
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.82rem;
+  text-transform:uppercase;letter-spacing:.1em;
+  color:rgba(245,240,232,.6);text-decoration:none;
+  padding:.4rem .9rem;border:1px solid rgba(201,150,42,.25);border-radius:3px;
+  transition:.25s;
+}
+.toc a:hover{color:var(--gold-light);border-color:var(--gold);background:rgba(201,150,42,.08);}
+
+/* ── SECTIONS ── */
+.sec{padding:5rem 1.5rem;max-width:1140px;margin:0 auto;}
+.sec-dark{background:rgba(0,0,0,.22);}
+.sec-wrap{max-width:1140px;margin:0 auto;padding:5rem 1.5rem;}
+
+.sec-head{margin-bottom:2.5rem;}
+.sec-label{font-family:'Rajdhani',sans-serif;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
+.sec-title{font-family:'Cinzel Decorative',serif;font-size:clamp(1.1rem,3vw,1.75rem);color:var(--white);margin-bottom:.6rem;}
+.sec-line{width:55px;height:2px;background:var(--gold);margin:.6rem 0 1rem;}
+.sec-desc{color:rgba(245,240,232,.65);line-height:1.75;max-width:680px;}
+
+/* ── COMPONENT CARDS (photo + info) ── */
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.8rem;}
+
+.comp-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;transition:transform .3s,box-shadow .3s,border-color .3s;
+}
+.comp-card:hover{transform:translateY(-7px);box-shadow:0 24px 55px rgba(0,0,0,.45);border-color:var(--gold);}
+
+.comp-photo{
+  width:100%;height:210px;object-fit:cover;
+  display:block;transition:transform .4s;
+  background:#0a0f1e;
+}
+.comp-card:hover .comp-photo{transform:scale(1.04);}
+.comp-photo-wrap{overflow:hidden;position:relative;}
+.comp-photo-wrap::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 55%,rgba(9,14,28,.92));
+}
+
+.comp-body{padding:1.4rem 1.5rem 1.6rem;}
+.comp-icon-row{display:flex;align-items:center;gap:.7rem;margin-bottom:.7rem;}
+.comp-emoji{font-size:1.6rem;}
+.comp-name{
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.2rem;
+  color:var(--gold-light);letter-spacing:.04em;
+}
+.comp-full{font-size:.78rem;color:rgba(245,240,232,.45);font-family:'Rajdhani',sans-serif;letter-spacing:.08em;text-transform:uppercase;}
+
+.comp-desc{font-size:.9rem;line-height:1.72;color:rgba(245,240,232,.75);margin-bottom:1rem;}
+
+.specs{display:flex;flex-direction:column;gap:.45rem;}
+.spec{
+  display:flex;align-items:flex-start;gap:.55rem;
+  font-size:.83rem;color:rgba(245,240,232,.6);
+}
+.spec::before{content:'›';color:var(--gold);font-weight:700;flex-shrink:0;margin-top:.05rem;}
+
+.comp-tag{
+  display:inline-block;margin-top:1rem;
+  background:rgba(201,150,42,.12);border:1px solid rgba(201,150,42,.3);
+  color:var(--gold-light);font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:.72rem;padding:.22rem .8rem;border-radius:20px;letter-spacing:.08em;text-transform:uppercase;
+}
+
+/* ── DEVWEB CARDS ── */
+.web-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.8rem;}
+.web-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;
+}
+.web-card:hover{transform:translateY(-6px);border-color:var(--gold);box-shadow:0 22px 50px rgba(0,0,0,.4);}
+.web-photo{width:100%;height:190px;object-fit:cover;display:block;transition:transform .4s;}
+.web-card:hover .web-photo{transform:scale(1.05);}
+.web-photo-wrap{overflow:hidden;}
+.web-body{padding:1.4rem 1.5rem 1.6rem;}
+.web-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.2rem;color:var(--gold-light);margin-bottom:.5rem;}
+.web-desc{font-size:.9rem;line-height:1.72;color:rgba(245,240,232,.72);margin-bottom:.9rem;}
+.web-bar-label{font-size:.72rem;font-family:'Rajdhani',sans-serif;color:rgba(245,240,232,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.web-bar{height:5px;background:rgba(201,150,42,.15);border-radius:10px;overflow:hidden;}
+.web-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:10px;animation:barAnim 1.3s .4s ease both;transform-origin:left;transform:scaleX(0);}
+@keyframes barAnim{to{transform:scaleX(1)}}
+
+.code-block{
+  background:#0a0e1c;border:1px solid rgba(201,150,42,.2);
+  border-radius:7px;padding:1rem 1.2rem;
+  font-family:'Courier New',monospace;font-size:.82rem;
+  color:#aed6f1;line-height:1.75;overflow-x:auto;margin-top:.9rem;
+}
+.code-block .tag-c{color:#f0c050;}
+.code-block .attr-c{color:#82e0aa;}
+.code-block .val-c{color:#f1948a;}
+.code-block .prop-c{color:#85c1e9;}
+.code-block .kw-c{color:#c39bd3;}
+.code-block .str-c{color:#f9e79f;}
+.code-block .cmt{color:#5d6d7e;font-style:italic;}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:2.8rem;}
+.timeline::before{
+  content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--gold),var(--crimson),transparent);
+}
+.tl-item{position:relative;margin-bottom:2.4rem;}
+.tl-dot{
+  position:absolute;left:-2.8rem;top:.2rem;
+  width:17px;height:17px;border-radius:50%;
+  background:var(--gold);border:3px solid var(--navy);
+  box-shadow:0 0 14px rgba(201,150,42,.75);
+}
+.tl-num{
+  font-family:'Rajdhani',sans-serif;font-weight:700;
+  color:var(--gold);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;
+}
+.tl-item h4{font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--white);font-size:1.05rem;margin-bottom:.4rem;}
+.tl-item p{font-size:.92rem;color:rgba(245,240,232,.7);line-height:1.7;}
+
+/* ── INFO BOX ── */
+.info-box{
+  background:rgba(201,150,42,.07);border:1px solid rgba(201,150,42,.25);
+  border-left:3px solid var(--gold);
+  border-radius:0 7px 7px 0;
+  padding:1.1rem 1.4rem;margin-top:2.5rem;
+}
+.info-box p{font-size:.9rem;color:rgba(245,240,232,.75);line-height:1.72;}
+.info-box strong{color:var(--gold-light);}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;padding:3rem 1.5rem;
+  border-top:1px solid rgba(201,150,42,.2);
+  font-family:'Rajdhani',sans-serif;color:rgba(245,240,232,.35);font-size:.85rem;letter-spacing:.08em;
+}
+footer img{width:52px;border-radius:50%;opacity:.7;margin:0 auto 1rem;display:block;}
+footer span{color:var(--gold);}
+
+@media(max-width:640px){
+  .comp-grid,.web-grid{grid-template-columns:1fr;}
+  .sec,.sec-wrap{padding:3.5rem 1rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="logo-wrap"><img src="CnFp.png" alt="Club CNFP Oran"></div>
+  <div class="badge">Club CNFP Oran · Examen 2025</div>
+  <h1>Introduction à<br>l'Informatique</h1>
+  <p class="subtitle">Composants matériels &amp; Développement Web</p>
+  <div class="divider"></div>
+  <div class="scroll-hint"><span>Scroll</span><span>↓</span></div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav class="toc">
+  <a href="#intro">C'est quoi ?</a>
+  <a href="#composants">Composants</a>
+  <a href="#devweb">Dev Web</a>
+  <a href="#comment">Comment ça marche</a>
+</nav>
+
+<!-- ══════════════════════════════════════
+     SECTION 1 – INTRODUCTION
+══════════════════════════════════════ -->
+<section class="sec" id="intro">
+  <div class="sec-head">
+    <div class="sec-label">Chapitre 01</div>
+    <h2 class="sec-title">C'est quoi l'Informatique ?</h2>
+    <div class="sec-line"></div>
+    <p class="sec-desc">L'informatique est la science du <strong style="color:var(--gold-light)">traitement automatique de l'information</strong>. Elle regroupe tout ce qui concerne les ordinateurs : le matériel, les logiciels, les réseaux et les algorithmes.</p>
+  </div>
+
+  <div class="comp-grid">
+
+    <div class="comp-card">
+      <div class="comp-photo-wrap">
+        <img class="comp-photo" 
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Single_ALU.svg/400px-Single_ALU.svg.png"
+          onerror="this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80'"
+          alt="Algorithme">
+      </div>
+      <div class="comp-body">
+        <div class="comp-icon-row">
+          <span class="comp-emoji">🧠</span>
+          <div><div class="comp-name">Algorithme</div><div class="comp-full">Logic &amp; Instructions</div></div>
+        </div>
+        <p class="comp-desc">Suite d'instructions précises et ordonnées pour résoudre un problème. C'est la base de tout programme informatique.</p>
+        <div class="specs">
+          <div class="spec">Séquence d'étapes logiques</div>
+          <div class="spec">Entrée → Traitement → Sortie (modèle IPO)</div>
+          <div class="spec">Peut être écrit en pseudocode ou en organigramme</div>
+        </div>
+        <span class="comp-tag">Fondamental</span>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-photo-wrap">
+        <img class="comp-photo"
+          src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80"
+          alt="Réseau informatique">
+      </div>
+      <div class="comp-body">
+        <div class="comp-icon-row">
+          <span class="comp-emoji">🌐</span>
+          <div><div class="comp-name">Réseau</div><div class="comp-full">Network &amp; Communication</div></div>
+        </div>
+        <p class="comp-desc">Ensemble d'ordinateurs et d'appareils connectés pour partager des données et des ressources.</p>
+        <div class="specs">
+          <div class="spec">LAN (réseau local), WAN (réseau étendu)</div>
+          <div class="spec">Protocoles : TCP/IP, HTTP, FTP</div>
+          <div class="spec">Internet = réseau des réseaux mondiaux</div>
+        </div>
+        <span class="comp-tag">Infrastructure</span>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-photo-wrap">
+        <img class="comp-photo"
+          src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80"
+          alt="Système informatique">
+      </div>
+      <div class="comp-body">
+        <div class="comp-icon-row">
+          <span class="comp-emoji">💻</span>
+          <div><div class="comp-name">Système informatique</div><div class="comp-full">Hardware + Software</div></div>
+        </div>
+        <p class="comp-desc">Ensemble formé par le matériel (hardware) et les logiciels (software) qui travaillent ensemble pour traiter l'information.</p>
+        <div class="specs">
+          <div class="spec">Hardware : partie physique visible et tangible</div>
+          <div class="spec">Software : programmes, OS, applications</div>
+          <div class="spec">Firmware : logiciel intégré dans le matériel</div>
+        </div>
+        <span class="comp-tag">Système</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 2 – COMPOSANTS
+══════════════════════════════════════ -->
+<div class="sec-dark">
+<div class="sec-wrap" id="composants">
+  <div class="sec-head">
+    <div class="sec-label">Chapitre 02</div>
+    <h2 class="sec-title">Composants d'un Ordinateur</h2>
+    <div class="sec-line"></div>
+    <p class="sec-desc">L'ordinateur est composé de plusieurs éléments matériels qui travaillent ensemble. Voici les composants essentiels avec des exemples réels.</p>
+  </div>
+
+  <div class="comp-grid">
+
+    <!-- CPU -->
+    <div class="comp-card">
+      <div class="comp-photo-wrap">
+        <img class="comp-photo"
+          src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=600&q=80"
+          onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Intel_Core_i9_9900K.jpg/400px-Intel_Core_i9_9900K.jpg'"
+          alt="CPU Processeur">
+      </div>
+      <div class="comp-body">
+        <div class="comp-icon-row">
+          <span class="comp-emoji">🖥️</span>
+          <div><div class="comp-name">CPU – Processeur</div><div class="comp-full">Central Processing Unit</div></div>
+        </div>
+        <p class="comp-desc">Le cerveau de l'ordinateur. Il exécute toutes les instructions des programmes et effectue les calculs.</p>
+        <div class="specs">
+          <div class="spec">Exemples : Intel Core i9, AMD Ryzen 9</div>
+          <div class="spec">Mesure : fréquence en GHz (ex. 3.8 GHz)</div>
+          <div class="spec">Plus le GHz est élevé = plus c'est rapide</div>
+          <div class="spec">Composé de millions de transistors</div>
+        </div>
+        <span class="comp-tag">Matériel principal</span>
+      </div>
+    </div>
+
+    <!-- RAM -->
+    <div class="comp-card">
+      <div class="comp-photo-wrap">
+        <img class="comp-photo"
+          src="https://images.unsplash.com/photo-1562976540-1502c2145851?w=600&q=80"
+          onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Swissbit_2GB_PC2-5300U-555.jpg/400px-Swissbit_2GB_PC2-5300U-555.jpg'"
+          alt="RAM Mémoire vive">
+      </div>
+      <div class="comp-body">
+        <div class="comp-icon-row">
+          <span class="comp-emoji">🧩</span>
+          <div><div class="comp-name">RAM – Mémoire vive</div><div class="comp-full">Random Access Memory</div></div>
+        </div>
+        <p class="comp-desc">Mémoire temporaire ultra-rapide. Elle stocke les données des programmes en cours d'utilisation.</p>
+        <div class="specs">
+          <div class="spec">Exemples : DDR4 8Go, DDR5 16Go</div>
+          <div class="spec">Se vide quand on éteint l'ordinateur</div>
+          <div class="spec">Plus de RAM = plus d'applications simultanées</div>
+          <div class="spec">Différente du stockage (SSD/HDD)</div>
+        </div>
+        <span class="comp-tag">Mémoire</span>
+      </div>
+    </div>
+
+    <!-- CARTE MÈRE -->
+    <div class="comp-card">
+      <div class="comp-photo-wrap">
+        <img class="comp-photo"
+          src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80"
+          alt="Carte mère motherboard">
+      </div>
+      <div class="comp-body">
+        <div class="comp-icon-row">
+          <span class="comp-emoji">🔌</span>
+          <div><div class="comp-name">Carte Mère</div><div class="comp-full">Motherboard / Mainboard</div></div>
+        </div>
+        <p class="comp-desc">Le circuit imprimé principal. Elle connecte tous les composants entre eux et permet leur communication.</p>
+        <div class="specs">
+          <div class="spec">Exemples : ASUS ROG, MSI MAG, Gigabyte</div>
+          <div class="spec">Contient le BIOS (démarrage du PC)</div>
+          <div class="spec">Ports : USB, PCIe, SATA, RAM slots</div>
+          <div class="spec">Format : ATX, Micro-ATX, Mini-ITX</div>
+        </div>
+        <span class="comp-tag">Infrastructure</span>
+      </div>
+    </div>
+
+    <!-- SSD / HDD -->
+    <div class="comp-card">
+      <div class="comp-photo-wrap">
+        <img class="comp-photo"
+          src="https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=600&q=80"
+          onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Laptop-hard-drive-exposed.jpg/400px-Laptop-hard-drive-exposed.jpg'"
+          alt="SSD Disque dur">
+      </div>
+      <div class="comp-body">
+        <div class="comp-icon-row">
+          <span class="comp-emoji">💽</span>
+          <div><div class="comp-name">SSD / HDD</div><div class="comp-full">Stockage permanent</div></div>
+        </div>
+        <p class="comp-desc">Stockage permanent des données : système d'exploitation, fichiers, programmes. Les données restent même après extinction.</p>
+        <div class="specs">
+          <div class="spec">SSD (Solid State Drive) : rapide, silencieux, cher</div>
+          <div class="spec">HDD (Hard Disk Drive) : moins cher, plus lent</div>
+          <div class="spec">Capacité : 256 Go → plusieurs To</div>
+          <div class="spec">NVMe M.2 : SSD ultra-rapide nouvelle génération</div>
+        </div>
+        <span class="comp-tag">Stockage</span>
+      </div>
+    </div>
+
+    <!-- GPU -->
+    <div class="comp-card">
+      <div class="comp-photo-wrap">
+        <img class="comp-photo"
+          src="https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=600&q=80"
+          alt="GPU Carte graphique">
+      </div>
+      <div class="comp-body">
+        <div class="comp-icon-row">
+          <span class="comp-emoji">🎮</span>
+          <div><div class="comp-name">GPU – Carte Graphique</div><div class="comp-full">Graphics Processing Unit</div></div>
+        </div>
+        <p class="comp-desc">Spécialisée dans le traitement des images et des calculs parallèles massifs. Essentielle pour les jeux vidéo et l'IA.</p>
+        <div class="specs">
+          <div class="spec">Exemples : NVIDIA RTX 4090, AMD RX 7900</div>
+          <div class="spec">Milliers de cores pour le calcul parallèle</div>
+          <div class="spec">VRAM : mémoire dédiée à la carte graphique</div>
+          <div class="spec">Utilisée aussi pour le Machine Learning / IA</div>
+        </div>
+        <span class="comp-tag">Graphique</span>
+      </div>
+    </div>
+
+    <!-- PSU -->
+    <div class="comp-card">
+      <div class="comp-photo-wrap">
+        <img class="comp-photo"
+          src="https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=600&q=80"
+          onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/ATX_PS2_PSU.jpg/400px-ATX_PS2_PSU.jpg'"
+          alt="Alimentation PSU">
+      </div>
+      <div class="comp-body">
+        <div class="comp-icon-row">
+          <span class="comp-emoji">⚡</span>
+          <div><div class="comp-name">Alimentation (PSU)</div><div class="comp-full">Power Supply Unit</div></div>
+        </div>
+        <p class="comp-desc">Fournit l'énergie électrique à tous les composants de l'ordinateur. Convertit le courant alternatif (AC) en courant continu (DC).</p>
+        <div class="specs">
+          <div class="spec">Puissance en Watts : 500W, 750W, 1000W</div>
+          <div class="spec">Certification : 80 PLUS Bronze/Gold/Platinum</div>
+          <div class="spec">Modulaire ou non-modulaire</div>
+          <div class="spec">Protections : surtension, surintensité, court-circuit</div>
+        </div>
+        <span class="comp-tag">Énergie</span>
+      </div>
+    </div>
+
+    <!-- Périphériques -->
+    <div class="comp-card">
+      <div class="comp-photo-wrap">
+        <img class="comp-photo"
+          src="https://images.unsplash.com/photo-1527814050087-3793815479db?w=600&q=80"
+          alt="Périphériques clavier souris écran">
+      </div>
+      <div class="comp-body">
+        <div class="comp-icon-row">
+          <span class="comp-emoji">⌨️</span>
+          <div><div class="comp-name">Périphériques I/O</div><div class="comp-full">Input / Output Devices</div></div>
+        </div>
+        <p class="comp-desc">Permettent à l'utilisateur d'interagir avec l'ordinateur. Divisés en entrée (input) et sortie (output).</p>
+        <div class="specs">
+          <div class="spec">Entrée (Input) : clavier, souris, microphone, scanner</div>
+          <div class="spec">Sortie (Output) : écran, imprimante, haut-parleurs</div>
+          <div class="spec">Entrée+Sortie : écran tactile, casque avec micro</div>
+        </div>
+        <span class="comp-tag">I/O</span>
+      </div>
+    </div>
+
+    <!-- Système d'exploitation -->
+    <div class="comp-card">
+      <div class="comp-photo-wrap">
+        <img class="comp-photo"
+          src="https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=600&q=80"
+          alt="Système d'exploitation OS">
+      </div>
+      <div class="comp-body">
+        <div class="comp-icon-row">
+          <span class="comp-emoji">🖥️</span>
+          <div><div class="comp-name">Système d'exploitation</div><div class="comp-full">Operating System – OS</div></div>
+        </div>
+        <p class="comp-desc">Logiciel principal qui gère le matériel et les applications. Il fait l'interface entre l'utilisateur et la machine.</p>
+        <div class="specs">
+          <div class="spec">Exemples : Windows 11, macOS, Linux Ubuntu</div>
+          <div class="spec">Gère la mémoire, les processus, les fichiers</div>
+          <div class="spec">Interface graphique (GUI) ou ligne de commande (CLI)</div>
+          <div class="spec">Android et iOS = OS pour mobiles</div>
+        </div>
+        <span class="comp-tag">Logiciel système</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="info-box">
+    <p>💡 <strong>Moyen mnémotechnique :</strong> Pense à l'ordinateur comme un restaurant. Le <strong>CPU</strong> = le chef cuisinier (qui fait tout le travail), la <strong>RAM</strong> = le plan de travail (espace temporaire), le <strong>SSD</strong> = le garde-manger (stockage permanent), la <strong>carte mère</strong> = la cuisine (relie tout le monde), le <strong>PSU</strong> = l'électricité, et toi (l'utilisateur) = le client avec clavier/souris.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECTION 3 – DÉVELOPPEMENT WEB
+══════════════════════════════════════ -->
+<section class="sec" id="devweb">
+  <div class="sec-head">
+    <div class="sec-label">Chapitre 03</div>
+    <h2 class="sec-title">Développement Web</h2>
+    <div class="sec-line"></div>
+    <p class="sec-desc">Le développement web consiste à créer des sites et applications accessibles via un navigateur. Il se divise en <strong style="color:var(--gold-light)">Front-end</strong> (ce que voit l'utilisateur) et <strong style="color:var(--gold-light)">Back-end</strong> (serveur &amp; base de données).</p>
+  </div>
+
+  <div class="web-grid">
+
+    <!-- HTML -->
+    <div class="web-card">
+      <div class="web-photo-wrap">
+        <img class="web-photo"
+          src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=600&q=80"
+          alt="HTML code">
+      </div>
+      <div class="web-body">
+        <div class="web-name">🏗️ HTML – Structure</div>
+        <p class="web-desc">HyperText Markup Language. Définit la structure et le contenu d'une page web avec des balises.</p>
+        <div class="code-block">
+<span class="tag-c">&lt;!DOCTYPE html&gt;</span>
+<span class="tag-c">&lt;html&gt;</span>
+  <span class="tag-c">&lt;head&gt;</span>
+    <span class="tag-c">&lt;title&gt;</span>Ma Page<span class="tag-c">&lt;/title&gt;</span>
+  <span class="tag-c">&lt;/head&gt;</span>
+  <span class="tag-c">&lt;body&gt;</span>
+    <span class="tag-c">&lt;h1&gt;</span>Bonjour !<span class="tag-c">&lt;/h1&gt;</span>
+    <span class="tag-c">&lt;p&gt;</span>Club CNFP<span class="tag-c">&lt;/p&gt;</span>
+  <span class="tag-c">&lt;/body&gt;</span>
+<span class="tag-c">&lt;/html&gt;</span></div>
+        <div class="web-bar-label">Importance</div>
+        <div class="web-bar"><div class="web-fill" style="width:95%"></div></div>
+      </div>
+    </div>
+
+    <!-- CSS -->
+    <div class="web-card">
+      <div class="web-photo-wrap">
+        <img class="web-photo"
+          src="https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=600&q=80"
+          alt="CSS design">
+      </div>
+      <div class="web-body">
+        <div class="web-name">🎨 CSS – Style</div>
+        <p class="web-desc">Cascading Style Sheets. Gère la mise en forme : couleurs, polices, animations, mise en page responsive.</p>
+        <div class="code-block">
+<span class="tag-c">body</span> {
+  <span class="prop-c">background</span>: <span class="str-c">#1a2040</span>;
+  <span class="prop-c">color</span>: <span class="str-c">white</span>;
+  <span class="prop-c">font-family</span>: <span class="str-c">'Arial'</span>;
+}
+<span class="tag-c">h1</span> {
+  <span class="prop-c">color</span>: <span class="str-c">gold</span>;
+  <span class="prop-c">font-size</span>: <span class="str-c">2rem</span>;
+}</div>
+        <div class="web-bar-label">Importance</div>
+        <div class="web-bar"><div class="web-fill" style="width:88%"></div></div>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <div class="web-card">
+      <div class="web-photo-wrap">
+        <img class="web-photo"
+          src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=80"
+          alt="JavaScript programming">
+      </div>
+      <div class="web-body">
+        <div class="web-name">⚙️ JavaScript – Interactivité</div>
+        <p class="web-desc">Langage de programmation du web. Rend les pages interactives : boutons, animations, appels API, logique.</p>
+        <div class="code-block">
+<span class="cmt">// Afficher un message</span>
+<span class="kw-c">function</span> <span class="attr-c">saluer</span>() {
+  <span class="kw-c">let</span> nom = <span class="str-c">"CNFP"</span>;
+  <span class="tag-c">alert</span>(<span class="str-c">"Bonjour "</span> + nom);
+}
+
+<span class="tag-c">document</span>.<span class="attr-c">getElementById</span>(<span class="str-c">"btn"</span>)
+  .<span class="attr-c">onclick</span> = saluer;</div>
+        <div class="web-bar-label">Importance</div>
+        <div class="web-bar"><div class="web-fill" style="width:82%"></div></div>
+      </div>
+    </div>
+
+    <!-- Back-end -->
+    <div class="web-card">
+      <div class="web-photo-wrap">
+        <img class="web-photo"
+          src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80"
+          alt="Server backend">
+      </div>
+      <div class="web-body">
+        <div class="web-name">🖥️ Back-end – Serveur</div>
+        <p class="web-desc">Côté serveur invisible pour l'utilisateur. Traite les données, gère l'authentification, communique avec la base de données.</p>
+        <div class="specs">
+          <div class="spec">Langages : PHP, Python, Node.js, Java</div>
+          <div class="spec">Frameworks : Laravel, Django, Express.js</div>
+          <div class="spec">API REST : échange de données JSON</div>
+          <div class="spec">Serveurs web : Apache, Nginx</div>
+        </div>
+        <div class="web-bar-label">Importance</div>
+        <div class="web-bar"><div class="web-fill" style="width:78%"></div></div>
+      </div>
+    </div>
+
+    <!-- Base de données -->
+    <div class="web-card">
+      <div class="web-photo-wrap">
+        <img class="web-photo"
+          src="https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=600&q=80"
+          alt="Database SQL">
+      </div>
+      <div class="web-body">
+        <div class="web-name">🗄️ Base de données</div>
+        <p class="web-desc">Stocke et organise les données de façon structurée. Le back-end interroge la BDD pour récupérer ou enregistrer des informations.</p>
+        <div class="code-block">
+<span class="cmt">-- Requête SQL simple</span>
+<span class="kw-c">SELECT</span> nom, prenom
+<span class="kw-c">FROM</span> <span class="attr-c">etudiants</span>
+<span class="kw-c">WHERE</span> <span class="attr-c">universite</span> = <span class="str-c">'Oran'</span>
+<span class="kw-c">ORDER BY</span> <span class="attr-c">nom</span> <span class="kw-c">ASC</span>;</div>
+        <div class="web-bar-label">Importance</div>
+        <div class="web-bar"><div class="web-fill" style="width:75%"></div></div>
+      </div>
+    </div>
+
+    <!-- Responsive -->
+    <div class="web-card">
+      <div class="web-photo-wrap">
+        <img class="web-photo"
+          src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&q=80"
+          alt="Responsive design mobile">
+      </div>
+      <div class="web-body">
+        <div class="web-name">📱 Responsive Design</div>
+        <p class="web-desc">Adaptation automatique du site à tous les types d'écrans : mobile, tablette, desktop. Indispensable aujourd'hui.</p>
+        <div class="specs">
+          <div class="spec">Media queries CSS pour chaque taille d'écran</div>
+          <div class="spec">Mobile First : concevoir d'abord pour mobile</div>
+          <div class="spec">Flexbox et CSS Grid pour les mises en page</div>
+          <div class="spec">Frameworks : Bootstrap, Tailwind CSS</div>
+        </div>
+        <div class="web-bar-label">Importance</div>
+        <div class="web-bar"><div class="web-fill" style="width:85%"></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 4 – COMMENT ÇA MARCHE
+══════════════════════════════════════ -->
+<div class="sec-dark">
+<div class="sec-wrap" id="comment">
+  <div class="sec-head">
+    <div class="sec-label">Chapitre 04</div>
+    <h2 class="sec-title">Comment fonctionne un site web ?</h2>
+    <div class="sec-line"></div>
+    <p class="sec-desc">Quand tu tapes une URL dans ton navigateur, toute une chaîne d'événements se déclenche en moins d'une seconde.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-num">Étape 01</div>
+      <h4>L'utilisateur tape une URL</h4>
+      <p>Ex : <em style="color:var(--gold-light)">https://www.google.com</em> — le navigateur (Chrome, Firefox…) va devoir trouver le serveur correspondant à ce nom.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-num">Étape 02</div>
+      <h4>Résolution DNS</h4>
+      <p>Le DNS (Domain Name System) traduit le nom de domaine en adresse IP numérique. Comme un annuaire téléphonique : "google.com" → "142.250.74.46".</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-num">Étape 03</div>
+      <h4>Connexion TCP/IP &amp; Requête HTTP</h4>
+      <p>Le navigateur se connecte au serveur et envoie une requête <strong style="color:var(--gold-light)">GET /index.html HTTP/1.1</strong>. HTTPS chiffre la communication avec SSL/TLS pour la sécurité.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-num">Étape 04</div>
+      <h4>Traitement côté serveur</h4>
+      <p>Le serveur web (Apache/Nginx) reçoit la requête, exécute le code back-end (PHP, Python…), interroge la base de données si nécessaire, puis prépare la réponse.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-num">Étape 05</div>
+      <h4>Réponse : HTML + CSS + JS</h4>
+      <p>Le serveur renvoie les fichiers avec un code de réponse HTTP : <strong style="color:var(--gold-light)">200 OK</strong> (succès), 404 (page non trouvée), 500 (erreur serveur).</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-num">Étape 06</div>
+      <h4>Rendu par le navigateur</h4>
+      <p>Le navigateur parse le HTML, applique le CSS, exécute JavaScript. Il construit le DOM (Document Object Model) et affiche la page finale à l'utilisateur.</p>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:2.5rem;">
+    <p>🔐 <strong>HTTP vs HTTPS :</strong> HTTP envoie les données en clair (dangereux). HTTPS les chiffre avec SSL/TLS. Le cadenas 🔒 dans la barre d'adresse = connexion sécurisée. Toujours utiliser HTTPS pour les sites avec des mots de passe ou données personnelles.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <img src="CnFp.png" alt="CNFP">
+  <p>Réalisé par <span>Club CNFP Oran</span> · Introduction à l'Informatique</p>
+  <p style="margin-top:.5rem;">Composants Matériels &amp; Développement Web · Bonne chance à l'examen ! 🦁</p>
+</footer>
+
+</body>
+</html>
